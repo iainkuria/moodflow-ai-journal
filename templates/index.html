@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodFlow - Your AI-Powered Mood Journal 🌊</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="#">
+                <i class="fas fa-wave-square me-2"></i>MoodFlow
+            </a>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-outline-light me-3" id="themeToggle">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <span class="text-light">
+                    <i class="fas fa-brain me-1"></i>
+                    AI-Powered Insights
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100 py-5">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="display-4 fw-bold mb-4 gradient-text">
+                            Track Your Mood, <br>Transform Your Mind 🧠✨
+                        </h1>
+                        <p class="lead mb-4">
+                            AI-powered sentiment analysis meets personalized insights. 
+                            Write, analyze, and unlock deep understanding of your emotional journey.
+                        </p>
+                        <div class="feature-badges mb-4">
+                            <span class="badge bg-success me-2">
+                                <i class="fas fa-chart-line me-1"></i>Free Analytics
+                            </span>
+                            <span class="badge bg-warning">
+                                <i class="fas fa-sparkles me-1"></i>Premium AI Insights
+                            </span>
+                        </div>
+                        <button class="btn btn-primary btn-lg pulse-animation" onclick="scrollToJournal()">
+                            <i class="fas fa-pen me-2"></i>Start Journaling
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-visual">
+                        <div class="floating-card">
+                            <div class="mood-indicator positive">😊</div>
+                            <div class="mood-indicator neutral">😐</div>
+                            <div class="mood-indicator negative">😔</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Application -->
+    <div class="container py-5" id="journalSection">
+        <!-- Journal Entry Form -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-gradient-primary text-white text-center py-4 rounded-top-4">
+                        <h3 class="mb-0">
+                            <i class="fas fa-feather-alt me-2"></i>
+                            How are you feeling today?
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="journalForm">
+                            <div class="mb-3">
+                                <textarea 
+                                    class="form-control form-control-lg rounded-3" 
+                                    id="journalText" 
+                                    rows="6" 
+                                    placeholder="Express yourself freely... Your thoughts, feelings, and experiences are welcome here. 💭"
+                                    required
+                                ></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-3">
+                                    <i class="fas fa-magic me-2"></i>
+                                    Analyze My Mood
+                                    <span class="spinner-border spinner-border-sm ms-2 d-none" id="loadingSpinner"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mood Chart -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-light py-3">
+                        <h4 class="mb-0 text-center">
+                            <i class="fas fa-chart-area me-2 text-primary"></i>
+                            Your Mood Journey 📈
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="moodChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journal Entries History -->
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-gradient-secondary text-white py-3">
+                        <h4 class="mb-0 text-center">
+                            <i class="fas fa-history me-2"></i>
+                            Your Journal Entries 📖
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="entriesContainer">
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-book-open fa-3x mb-3"></i>
+                                <p>No entries yet. Start writing your first journal entry above! ✍️</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-2">
+                <i class="fas fa-heart text-danger me-1"></i>
+                Made with AI-powered insights for your emotional wellbeing
+            </p>
+            <p class="text-muted">
+                Powered by Hugging Face • OpenAI • IntaSend • Flask
+            </p>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-body text-center p-4">
+                    <div class="success-animation mb-3">
+                        <i class="fas fa-check-circle fa-4x text-success"></i>
+                    </div>
+                    <h5 class="mb-3">Entry Saved Successfully! 🎉</h5>
+                    <p class="text-muted">Your mood has been analyzed and saved to your journal.</p>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
