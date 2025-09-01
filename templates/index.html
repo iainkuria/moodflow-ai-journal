@@ -31,7 +31,17 @@
                 <button class="btn btn-outline-light me-3" id="themeToggle">
                     <i class="fas fa-moon" id="themeIcon"></i>
                 </button>
-                <span class="text-light">
+                <!-- User info and logout (only shown when authenticated) -->
+                <div class="d-none" id="userInfo">
+                    <span class="text-light me-3">
+                        <i class="fas fa-user me-1"></i>
+                        Welcome, <span id="userName">User</span>
+                    </span>
+                    <button class="btn btn-outline-light btn-sm" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </button>
+                </div>
+                <span class="text-light d-none" id="aiPoweredBadge">
                     <i class="fas fa-brain me-1"></i>
                     AI-Powered Insights
                 </span>
@@ -39,113 +49,103 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
+    <!-- Authentication Section (initially shown) -->
+    <div id="authContainer" class="min-vh-100 d-flex align-items-center">
         <div class="container">
-            <div class="row align-items-center min-vh-100 py-5">
-                <div class="col-lg-6">
-                    <div class="hero-content">
-                        <h1 class="display-4 fw-bold mb-4 gradient-text">
-                            Track Your Mood, <br>Transform Your Mind 🧠✨
-                        </h1>
-                        <p class="lead mb-4">
-                            AI-powered sentiment analysis meets personalized insights. 
-                            Write, analyze, and unlock deep understanding of your emotional journey.
-                        </p>
-                        <div class="feature-badges mb-4">
-                            <span class="badge bg-success me-2">
-                                <i class="fas fa-chart-line me-1"></i>Free Analytics
-                            </span>
-                            <span class="badge bg-warning">
-                                <i class="fas fa-sparkles me-1"></i>Premium AI Insights
-                            </span>
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-gradient-primary text-white text-center py-4 rounded-top-4">
+                            <h3 class="mb-0">
+                                <i class="fas fa-wave-square me-2"></i>MoodFlow
+                            </h3>
+                            <p class="mb-0 mt-2">Your AI-Powered Mood Journal</p>
                         </div>
-                        <button class="btn btn-primary btn-lg pulse-animation" onclick="scrollToJournal()">
-                            <i class="fas fa-pen me-2"></i>Start Journaling
-                        </button>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="hero-visual">
-                        <div class="floating-card">
-                            <div class="mood-indicator positive">😊</div>
-                            <div class="mood-indicator neutral">😐</div>
-                            <div class="mood-indicator negative">😔</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Application -->
-    <div class="container py-5" id="journalSection">
-        <!-- Journal Entry Form -->
-        <div class="row mb-5">
-            <div class="col-lg-8 mx-auto">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-gradient-primary text-white text-center py-4 rounded-top-4">
-                        <h3 class="mb-0">
-                            <i class="fas fa-feather-alt me-2"></i>
-                            How are you feeling today?
-                        </h3>
-                    </div>
-                    <div class="card-body p-4">
-                        <form id="journalForm">
-                            <div class="mb-3">
-                                <textarea 
-                                    class="form-control form-control-lg rounded-3" 
-                                    id="journalText" 
-                                    rows="6" 
-                                    placeholder="Express yourself freely... Your thoughts, feelings, and experiences are welcome here. 💭"
-                                    required
-                                ></textarea>
+                        <div class="card-body p-4">
+                            <!-- Login Form -->
+                            <div id="loginFormContainer">
+                                <h4 class="text-center mb-4">Welcome Back</h4>
+                                <form id="loginForm">
+                                    <div class="mb-3">
+                                        <label for="loginUsername" class="form-label">Username or Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-user"></i>
+                                            </span>
+                                            <input type="text" class="form-control" id="loginUsername" name="username" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="loginPassword" class="form-label">Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                            <input type="password" class="form-control" id="loginPassword" name="password" required>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid mb-3">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="text-center">
+                                    <p class="text-muted">Don't have an account?</p>
+                                    <button class="btn btn-link" id="showRegister">Create Account</button>
+                                </div>
                             </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg rounded-3">
-                                    <i class="fas fa-magic me-2"></i>
-                                    Analyze My Mood
-                                    <span class="spinner-border spinner-border-sm ms-2 d-none" id="loadingSpinner"></span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Mood Chart -->
-        <div class="row mb-5">
-            <div class="col-lg-8 mx-auto">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-light py-3">
-                        <h4 class="mb-0 text-center">
-                            <i class="fas fa-chart-area me-2 text-primary"></i>
-                            Your Mood Journey 📈
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="moodChart" height="300"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Journal Entries History -->
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-gradient-secondary text-white py-3">
-                        <h4 class="mb-0 text-center">
-                            <i class="fas fa-history me-2"></i>
-                            Your Journal Entries 📖
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <div id="entriesContainer">
-                            <div class="text-center text-muted py-5">
-                                <i class="fas fa-book-open fa-3x mb-3"></i>
-                                <p>No entries yet. Start writing your first journal entry above! ✍️</p>
+                            <!-- Register Form (initially hidden) -->
+                            <div id="registerFormContainer" style="display: none;">
+                                <h4 class="text-center mb-4">Create Account</h4>
+                                <form id="registerForm">
+                                    <div class="mb-3">
+                                        <label for="registerUsername" class="form-label">Username</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-user"></i>
+                                            </span>
+                                            <input type="text" class="form-control" id="registerUsername" name="username" required minlength="3">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerEmail" class="form-label">Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-envelope"></i>
+                                            </span>
+                                            <input type="email" class="form-control" id="registerEmail" name="email" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerPassword" class="form-label">Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                            <input type="password" class="form-control" id="registerPassword" name="password" required minlength="6">
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6">
+                                        </div>
+                                    </div>
+                                    <div class="d-grid mb-3">
+                                        <button type="submit" class="btn btn-success btn-lg">
+                                            <i class="fas fa-user-plus me-2"></i>Create Account
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="text-center">
+                                    <p class="text-muted">Already have an account?</p>
+                                    <button class="btn btn-link" id="showLogin">Back to Login</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -154,18 +154,136 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-2">
-                <i class="fas fa-heart text-danger me-1"></i>
-                Made with AI-powered insights for your emotional wellbeing
-            </p>
-            <p class="text-muted">
-                Powered by Hugging Face • OpenAI • IntaSend • Flask
-            </p>
+    <!-- Main Application (initially hidden) -->
+    <div id="mainContent" style="display: none;">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="row align-items-center min-vh-100 py-5">
+                    <div class="col-lg-6">
+                        <div class="hero-content">
+                            <h1 class="display-4 fw-bold mb-4 gradient-text">
+                                Track Your Mood, <br>Transform Your Mind 🧠✨
+                            </h1>
+                            <p class="lead mb-4">
+                                AI-powered sentiment analysis meets personalized insights. 
+                                Write, analyze, and unlock deep understanding of your emotional journey.
+                            </p>
+                            <div class="feature-badges mb-4">
+                                <span class="badge bg-success me-2">
+                                    <i class="fas fa-chart-line me-1"></i>Free Analytics
+                                </span>
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-sparkles me-1"></i>Premium AI Insights
+                                </span>
+                            </div>
+                            <button class="btn btn-primary btn-lg pulse-animation" onclick="scrollToJournal()">
+                                <i class="fas fa-pen me-2"></i>Start Journaling
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-visual">
+                            <div class="floating-card">
+                                <div class="mood-indicator positive">😊</div>
+                                <div class="mood-indicator neutral">😐</div>
+                                <div class="mood-indicator negative">😔</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Application -->
+        <div class="container py-5" id="journalSection">
+            <!-- Journal Entry Form -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-gradient-primary text-white text-center py-4 rounded-top-4">
+                            <h3 class="mb-0">
+                                <i class="fas fa-feather-alt me-2"></i>
+                                How are you feeling today?
+                            </h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="journalForm">
+                                <div class="mb-3">
+                                    <textarea 
+                                        class="form-control form-control-lg rounded-3" 
+                                        id="journalText" 
+                                        rows="6" 
+                                        placeholder="Express yourself freely... Your thoughts, feelings, and experiences are welcome here. 💭"
+                                        required
+                                    ></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-3">
+                                        <i class="fas fa-magic me-2"></i>
+                                        Analyze My Mood
+                                        <span class="spinner-border spinner-border-sm ms-2 d-none" id="loadingSpinner"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mood Chart -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-light py-3">
+                            <h4 class="mb-0 text-center">
+                                <i class="fas fa-chart-area me-2 text-primary"></i>
+                                Your Mood Journey 📈
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="moodChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journal Entries History -->
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-gradient-secondary text-white py-3">
+                            <h4 class="mb-0 text-center">
+                                <i class="fas fa-history me-2"></i>
+                                Your Journal Entries 📖
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div id="entriesContainer">
+                                <div class="text-center text-muted py-5">
+                                    <i class="fas fa-book-open fa-3x mb-3"></i>
+                                    <p>No entries yet. Start writing your first journal entry above! ✨</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
+
+        <!-- Footer -->
+        <footer class="bg-dark text-light py-4 mt-5">
+            <div class="container text-center">
+                <p class="mb-2">
+                    <i class="fas fa-heart text-danger me-1"></i>
+                    Made with AI-powered insights for your emotional wellbeing
+                </p>
+                <p class="text-muted">
+                    Powered by Hugging Face • OpenAI • IntaSend • Flask
+                </p>
+            </div>
+        </footer>
+    </div>
 
     <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1">

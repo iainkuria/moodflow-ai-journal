@@ -6,7 +6,7 @@
 ## 🔗 **Links**
 
 - **📊 Pitch Deck**: [View Presentation](https://gamma.app/docs/MoodFlow-AI-Powered-Emotional-Intelligence-yts4y6lfkx2b06q)
-- **🚀 Live Demo**: [DEPLOYMENT_LINK_PLACEHOLDER]
+- **🚀 Live Demo**: [https://moodflow-65ff8364178a.herokuapp.com/]
 
 ---
 
